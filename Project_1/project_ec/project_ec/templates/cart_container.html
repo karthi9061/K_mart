@@ -1,74 +1,54 @@
 {% load static %}
 <div class="small-container cart-page">
+    {% if cart.added_items.all %}
     <table>
-        <tbody><tr>
+        <tr>
             <th>Product</th>
             <th>Quantity</th>
             <th>Subtotal</th>
         </tr>
+        {% for cart_item in cart.added_items.all %}
         <tr>
             <td>
                 <div class="cart-info">
-                    <img src="{% static 'images/buy-1.jpg' %}">
+                    <img src="{{ cart_item.product.image.url }}" alt="{{ cart_item.product.title }}">
                     <div>
-                        <p>Red Printed T-Shirt</p>
-                        <small>Price: $50.00</small>
+                        <p>{{ cart_item.product.title }}</p>
+                        <small>Price: ${{ cart_item.product.price }}</small>
                         <br>
-                        <a href="">Remove</a>
+                        <a href="{% url 'remove_from_cart' cart_item.id %}">Remove</a>
                     </div>
                 </div>
             </td>
-            <td><input type="number" value="1"></td>
-            <td>$50.00</td>
+            <td><input type="number" disabled value="{{ cart_item.quantity }}"></td>
+            <td>${{ cart_item.product.price|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>Subtotal</td>
+            <td></td>
+            <td>${{ subtotal|floatformat:2 }}</td>
         </tr>
         <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="{% static 'images/buy-2.jpg' %}">
-                    <div>
-                        <p>Red Printed T-Shirt</p>
-                        <small>Price: $50.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$50.00</td>
+            <td>Tax (5%)</td>
+            <td></td>
+            <td>${{ tax|floatformat:2 }}</td>
         </tr>
         <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="{% static 'images/buy-3.jpg' %}">
-                    <div>
-                        <p>Red Printed T-Shirt</p>
-                        <small>Price: $50.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$50.00</td>
+            <td><strong>Total</strong></td>
+            <td></td>
+            <td><strong>${{ total|floatformat:2 }}</strong></td>
         </tr>
-    </tbody></table>
-    <div class="total-price">
-        <table>
-            <tbody><tr>
-                <td>Subtotal</td>
-                <td>$200.00</td>
-            </tr>
-            <tr>
-                <td>Tax</td>
-                <td>$35.00</td>
-            </tr>
-            <tr>
-                <td>Total</td>
-                <td>$230.00</td>
-            </tr><td colspan='2'></td><td colspan='2'><button>Confirm</button>
+        <tr>
+            <td colspan="3">
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <button type="submit">Confirm Order</button>
+                </form>
             </td>
         </tr>
-
-        </tbody></table>
-    </div>
+    </table>
+    {% else %}
+    <p>Your cart is empty.</p>
+    {% endif %}
 </div>

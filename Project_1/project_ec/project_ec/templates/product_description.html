@@ -5,22 +5,19 @@
             <img src="{{ product.image.url }}" alt="{{ product.title }}" width="100%" id="ProductImg">
         </div>
         <div class="col-2">
-            <p>{{product.title}}</p>
-            <h4>${{product.price}}</h4>
-            <select>
-                <option>SIZE</option>
-                <option>XXL</option>
-                <option>XL</option>
-                <option>L</option>
-                <option>M</option>
-                <option>S</option>
-            </select>
-            <input type="number" value="1">
-            <a href="" class="btn">Add To Cart</a>
+            <p>{{ product.title }}</p>
+            <h4>${{ product.price }}</h4>
+
+            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ product.id }}" name="product_id">
+                <input type="number" value="1" name="quantity" min="1">
+                <button type="submit" class="btn">Add to Cart</button>
+            </form>
 
             <h3>Product Details <i class="fa fa-indent"></i></h3>
             <br>
-            <p>{{product.discription}}</p>
+            <p>{{ product.description }}</p>
         </div>
     </div>
 </div>
